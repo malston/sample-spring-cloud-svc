@@ -28,7 +28,7 @@
         <sonar.jdbc.username>user</sonar.jdbc.username>
         <sonar.jdbc.password>password</sonar.jdbc.password>
         -->
-        <sonar.host.url>http://192.168.99.100:9000</sonar.host.url>
+        <sonar.host.url>http://10.0.0.218:9000</sonar.host.url>
       </properties>
     </profile>
   </profiles>
