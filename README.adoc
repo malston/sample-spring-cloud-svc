@@ -3,7 +3,7 @@
 See one of the following branches to checkout the respective pipeline:
 
 * https://github.com/pivotalservices/sample-spring-cloud-svc-ci[concourse] and view https://github.com/pivotalservices/sample-spring-cloud-svc-ci/blob/develop/ci/README.md[readme]
-* https://github.com/pivotalservices/sample-spring-cloud-svc-ci/tree/[jenkins]
+* https://github.com/pivotalservices/sample-spring-cloud-svc-ci/tree/jenkins[jenkins]
 * https://github.com/pivotalservices/sample-spring-cloud-svc-ci/tree/wercker[wercker]
 
 == Running Locally
