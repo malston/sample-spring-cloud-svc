@@ -1,7 +1,7 @@
 buildscript {
 	ext {
-		springBootVersion = '1.4.2.RELEASE'
-		cfAppVersion = '1.0.4.RELEASE'
+		springBootVersion = '1.4.4.RELEASE'
+		cfAppVersion = '1.0.7'
 	}
 	repositories {
 		mavenLocal()
@@ -63,7 +63,7 @@ dependencies {
 dependencyManagement {
 	imports {
 		mavenBom "io.pivotal.spring.cloud:spring-cloud-services-dependencies:1.3.1.RELEASE"
-		mavenBom "org.springframework.cloud:spring-cloud-dependencies:Camden.SR3"
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:Camden.SR5"
 	}
 }
 
