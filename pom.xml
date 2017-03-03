@@ -20,6 +20,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
         <reactor-core.version>3.0.3.RELEASE</reactor-core.version>
+        <!-- [PIPELINE] -->
+	      <distribution.management.release.id>artifactory-local</distribution.management.release.id>
+        <!-- [PIPELINE] -->
+        <!-- [PIPELINE] -->
+    		<distribution.management.snapshot.url>http://localhost:8081/artifactory/libs-snapshot-local</distribution.management.snapshot.url>
+    		<distribution.management.release.url>http://localhost:8081/artifactory/libs-release-local</distribution.management.release.url>
     </properties>
 
     <dependencies>
@@ -121,6 +127,20 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    	<!-- [PIPELINE] -->
+    	<distributionManagement>
+    		<repository>
+    			<id>${distribution.management.release.id}</id>
+    			<name>Spring Milestone Repository</name>
+    			<url>${distribution.management.release.url}</url>
+    		</repository>
+    		<snapshotRepository>
+    			<id>${distribution.management.release.id}</id>
+    			<name>Spring Snapshot Repository</name>
+    			<url>${distribution.management.snapshot.url}</url>
+    		</snapshotRepository>
+    	</distributionManagement>
 
     <build>
         <plugins>
