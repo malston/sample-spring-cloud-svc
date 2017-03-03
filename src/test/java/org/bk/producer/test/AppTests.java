@@ -20,13 +20,13 @@ public class AppTests extends Assert {
     @Test
     @Category(SmokeTest.class)
     public void smoke() throws Exception {
-        testApp(20*1000);
+        testApp(10*1000);
     }
 
     @Test
     @Category(AcceptanceTest.class)
     public void acceptance() throws Exception {
-        testApp(60*1000);
+        testApp(20*1000);
     }
 
     public void testApp(int duration) throws Exception {
@@ -37,7 +37,7 @@ public class AppTests extends Assert {
         HttpEntity<String> entity = new HttpEntity<String>("{\"message\": {\"payload\": \"test\"}}",headers);
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> contents = restTemplate.postForEntity(app, entity, String.class);
-        
+
         assertTrue(contents.getBody().contains("Hello!"));
 
         // this is supposed to be an integration test,
@@ -46,7 +46,7 @@ public class AppTests extends Assert {
     }
 
     private URI getSUT() throws Exception {
-        String url = System.getProperty("url");
+        String url = "http://" + System.getProperty("application.url")  + "/message";
         assertTrue("Subject under test should be passed in via -Durl=...", url!=null);
         return new URI(url);
     }
