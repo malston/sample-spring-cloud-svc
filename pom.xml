@@ -21,11 +21,13 @@
         <java.version>1.8</java.version>
         <reactor-core.version>3.0.3.RELEASE</reactor-core.version>
         <!-- [PIPELINE] -->
-	      <distribution.management.release.id>artifactory-local</distribution.management.release.id>
+        <distribution.management.release.id>artifactory-local</distribution.management.release.id>
         <!-- [PIPELINE] -->
         <!-- [PIPELINE] -->
-    		<distribution.management.snapshot.url>http://localhost:8081/artifactory/libs-snapshot-local</distribution.management.snapshot.url>
-    		<distribution.management.release.url>http://localhost:8081/artifactory/libs-release-local</distribution.management.release.url>
+        <distribution.management.snapshot.url>http://localhost:8081/artifactory/libs-snapshot-local
+        </distribution.management.snapshot.url>
+        <distribution.management.release.url>http://localhost:8081/artifactory/libs-release-local
+        </distribution.management.release.url>
     </properties>
 
     <dependencies>
@@ -39,12 +41,12 @@
             <artifactId>spring-cloud-starter</artifactId>
         </dependency>
 
-       <dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
-       <dependency>
+        <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-config-client</artifactId>
         </dependency>
@@ -73,11 +75,11 @@
             <artifactId>assertj-core</artifactId>
             <scope>test</scope>
         </dependency>
-    		<dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>compile</scope>
-    		</dependency>
+        </dependency>
 
         <dependency>
             <groupId>org.webjars</groupId>
@@ -128,19 +130,19 @@
         </dependencies>
     </dependencyManagement>
 
-    	<!-- [PIPELINE] -->
-    	<distributionManagement>
-    		<repository>
-    			<id>${distribution.management.release.id}</id>
-    			<name>Spring Milestone Repository</name>
-    			<url>${distribution.management.release.url}</url>
-    		</repository>
-    		<snapshotRepository>
-    			<id>${distribution.management.release.id}</id>
-    			<name>Spring Snapshot Repository</name>
-    			<url>${distribution.management.snapshot.url}</url>
-    		</snapshotRepository>
-    	</distributionManagement>
+    <!-- [PIPELINE] -->
+    <distributionManagement>
+        <repository>
+            <id>${distribution.management.release.id}</id>
+            <name>Spring Milestone Repository</name>
+            <url>${distribution.management.release.url}</url>
+        </repository>
+        <snapshotRepository>
+            <id>${distribution.management.release.id}</id>
+            <name>Spring Snapshot Repository</name>
+            <url>${distribution.management.snapshot.url}</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <build>
         <plugins>
@@ -166,55 +168,54 @@
     </build>
 
     <profiles>
-      <profile>
-        <id>smoke</id>
-        <build>
-          <plugins>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-surefire-plugin</artifactId>
-              <configuration>
-                <groups>org.bk.producer.test.SmokeTest</groups>
-              </configuration>
-            </plugin>
-          </plugins>
-        </build>
-      </profile>
-      <profile>
-        <id>acceptance</id>
-        <build>
-          <plugins>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-surefire-plugin</artifactId>
-              <configuration>
-                <groups>org.bk.producer.test.AcceptanceTest</groups>
-              </configuration>
-            </plugin>
-          </plugins>
-        </build>
-      </profile>
-      <profile>
-        <id>unit</id>
-        <activation>
-          <property>
-            <name>!smoke,!acceptance</name>
-          </property>
-        </activation>
-        <build>
-          <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <!-- <configuration>
-                    <excludes>
-                        <exclude>**/AppTests.java</exclude>
-                    </excludes>
-                </configuration> -->
-            </plugin>
-          </plugins>
-        </build>
-      </profile>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.18.1</version>
+                        <configuration>
+                            <includes>
+                                <include>org/bk/producer/service/*Test.java</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>smoke</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <groups>org.bk.producer.test.SmokeTest</groups>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>e2e</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <groups>org.bk.producer.test.AcceptanceTest</groups>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 
     <repositories>
