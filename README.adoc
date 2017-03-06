@@ -1,4 +1,4 @@
-Part of the deployment pipeline https://github.com/pivotalservices/sample-spring-cloud-svc/ci[example].
+Part of the deployment pipeline https://github.com/pivotalservices/sample-spring-cloud-svc-ci[example].
 
 == Running Locally
 
