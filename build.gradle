@@ -25,7 +25,7 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'cf-app'
 apply plugin: 'org.sonarqube'
 
-jar { baseName = 'sample-spring-cloud-svc-ci' }
+jar { baseName = 'sample-spring-cloud-svc' }
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -69,9 +69,9 @@ dependencyManagement {
 
 
 cfConfig {
-	name = "sample-spring-cloud-svc-ci"
-	hostName = "sample-spring-cloud-svc-ci"
-	filePath = "build/libs/sample-spring-cloud-svc-ci-${version}.jar"
+	name = "sample-spring-cloud-svc"
+	hostName = "sample-spring-cloud-svc"
+	filePath = "build/libs/sample-spring-cloud-svc-${version}.jar"
 
 	ccHost = "api.local.pcfdev.io"
 	ccUser = "admin"
