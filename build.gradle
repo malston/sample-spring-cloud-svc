@@ -87,7 +87,7 @@ cfConfig {
 }
 
 task cfAcceptanceTest(type: Test, dependsOn: "cf-get-app-detail")  {
-	doFirst() { systemProperty "url", "http://${project.cfConfig.applicationDetail.urls[0]}/message" }
+	doFirst() { systemProperty "application.url", "${project.cfConfig.applicationDetail.urls[0]}" }
 	useJUnit {
 		includeCategories 'org.bk.producer.test.AcceptanceTest'
 		excludeCategories 'org.bk.producer.test.SmokeTest'
@@ -95,7 +95,7 @@ task cfAcceptanceTest(type: Test, dependsOn: "cf-get-app-detail")  {
 }
 
 task cfSmokeTest(type: Test, dependsOn: "cf-get-app-detail")  {
-	doFirst() { systemProperty "url", "http://${project.cfConfig.applicationDetail.urls[0]}/message" }
+	doFirst() { systemProperty "application.url", "${project.cfConfig.applicationDetail.urls[0]}" }
 	useJUnit {
 		includeCategories 'org.bk.producer.test.SmokeTest'
 		excludeCategories 'org.bk.producer.test.AcceptanceTest'
