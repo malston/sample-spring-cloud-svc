@@ -67,6 +67,21 @@ dependencyManagement {
 	}
 }
 
+uploadArchives {
+	repositories {
+		mavenDeployer {
+			repository(url: "http://10.0.0.218:8081/content/repositories/releases") {
+				authentication(userName: "admin", password: "admin123")
+			}
+			snapshotRepository(url: 'http://10.0.0.218:8081/content/repositories/snapshots') {
+				authentication(userName: 'admin', password: 'admin123');
+			}
+			pom.version = "${version}"
+			pom.artifactId = "sample-spring-cloud-svc-ci"
+			pom.groupId = "org.bk"
+		}
+	}
+}
 
 cfConfig {
 	name = "sample-spring-cloud-svc"
