@@ -77,7 +77,7 @@ uploadArchives {
 				authentication(userName: 'admin', password: 'admin123');
 			}
 			pom.version = "${version}"
-			pom.artifactId = "sample-spring-cloud-svc-ci"
+			pom.artifactId = "sample-spring-cloud-svc"
 			pom.groupId = "org.bk"
 		}
 	}
