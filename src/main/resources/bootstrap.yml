@@ -1,7 +1,7 @@
 ---
 spring:
   application:
-    name: sample-spring-cloud-svc-ci
+    name: sample-spring-cloud-svc
   cloud:
     config:
       enabled: false
