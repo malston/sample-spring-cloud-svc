@@ -115,35 +115,34 @@ jobs:
       repository: out
       tag: out/tag
       only_tag: true
-#
-# - name: bump-version
-#   serial_groups:
-#     - version
-#   public: false
-#   plan:
-#     - aggregate:
-#       - get: tools
-#       - get: m2
-#       - get: repo
-#         resource: repo-master
-#         passed:
-#           - tag-master
-#         trigger: true
-#       - get:  repo
-#         resource: repo-release
-#       - get: version
-#         params: {bump: patch}
-#     - task: bump-to-next-develop-version
-#       file: tools/concourse/tasks/bump-to-next-develop-version.yml
-#       params:
-#         GIT_EMAIL: ((git-email))
-#         GIT_NAME: ((git-name))
-#     - put: repo
-#       resource: repo-release
-#       params:
-#         repository: out
-#     - put: version
-#       params: {file: version/number}
+
+- name: bump-version
+  serial_groups:
+    - version
+  public: false
+  plan:
+    - aggregate:
+      - get: tools
+      - get: m2
+      - get: repo-master
+        passed:
+          - tag-master
+        trigger: true
+      - get:  repo
+        resource: repo-release
+      - get: version
+        params: {bump: patch}
+    - task: bump-to-next-develop-version
+      file: repo/ci/tasks/bump-to-next-develop-version/task.yml
+      params:
+        GIT_EMAIL: ((git-email))
+        GIT_NAME: ((git-name))
+    - put: repo
+      resource: repo-release
+      params:
+        repository: out
+    - put: version
+      params: {file: version/number}
 
 - name: merge-release-to-develop
   public: false
@@ -152,7 +151,7 @@ jobs:
       - get: tools
       - get: repo-master
         passed:
-          - tag-master
+          - bump-version
         trigger: true
       - get: to-repo
         resource: repo-develop
