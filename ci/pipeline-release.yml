@@ -109,6 +109,7 @@ jobs:
       trigger: true
     - get: m2
     - get: version
+      params: {pre: rc}
   - task: stage-deploy
     file: tools/tasks/stage-deploy/task.yml
     params:
