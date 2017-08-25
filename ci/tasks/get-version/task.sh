@@ -17,18 +17,17 @@ echo "Version resource folder is [${VERSION_RESOURCE}]"
 echo "Functions folder is [${FUNCTIONS_FOLDER}]"
 
 PIPELINE_VERSION=$( cat ${ROOT_FOLDER}/${VERSION_RESOURCE}/version )
-echo "Generated pipeline version is [${PIPELINE_VERSION}]"
+echo "Current version is [${PIPELINE_VERSION}]"
 
 cd ${ROOT_FOLDER}/${REPO_RESOURCE}
-
-export USE_PIPELINE_VERSION=false
 
 [[ -f "${FUNCTIONS_FOLDER}/projectType/pipeline-jvm.sh" ]] && source "${FUNCTIONS_FOLDER}/projectType/pipeline-jvm.sh" || \
     echo "No ${FUNCTIONS_FOLDER}/projectType/pipeline-jvm.sh found"
 
+export USE_PIPELINE_VERSION=false
 PROJECT_VERSION=$( retrieveVersion )
 echo "Project version is [${PROJECT_VERSION}]"
-MESSAGE="[Concourse CI] Use ${PROJECT_VERSION} from ${PROJECT_TYPE} for pipeline"
+MESSAGE="[Concourse CI] Development Version (${PROJECT_VERSION})"
 
 cd ${ROOT_FOLDER}
 git clone version updated-version
@@ -39,7 +38,7 @@ pushd updated-version
   echo "${PROJECT_VERSION}" > version
 
   if [[ "${PROJECT_VERSION}" != "${PIPELINE_VERSION}" ]]; then
-    echo "Bump to ${PROJECT_VERSION}"
+    echo "Set version to ${PROJECT_VERSION}"
     git add version
     git commit -m "${MESSAGE}"
   fi
