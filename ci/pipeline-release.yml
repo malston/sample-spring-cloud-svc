@@ -6,8 +6,8 @@ resources:
     uri: ((app-url))
     branch: develop
     private_key: ((github-private-key))
-    # ignore_paths:
-    #   - ci
+    ignore_paths:
+      - ci
 
 - name: repo-release
   type: git
@@ -15,8 +15,8 @@ resources:
     uri: ((app-url))
     branch: release
     private_key: ((github-private-key))
-    # ignore_paths:
-    #   - ci
+    ignore_paths:
+      - ci
 
 - name: version
   type: semver
