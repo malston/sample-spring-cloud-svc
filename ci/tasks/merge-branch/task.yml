@@ -1,0 +1,24 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: java
+    tag: 8-jdk
+
+inputs:
+  - name: tools
+  - name: from-repo
+  - name: to-repo
+
+outputs:
+  - name: out
+
+run:
+  path: ci/tasks/merge-branch/task.sh
+
+params:
+  GIT_EMAIL:
+  GIT_NAME:
+  BRANCH_NAME:
