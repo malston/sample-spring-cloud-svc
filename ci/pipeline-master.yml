@@ -71,6 +71,7 @@ jobs:
     params:
       GIT_EMAIL: ((git-email))
       GIT_NAME: ((git-name))
+      SOURCE_BRANCH_NAME: release
   - put: to-repo
     resource: repo-master
     params:

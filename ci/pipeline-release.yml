@@ -72,7 +72,7 @@ jobs:
     params:
       GIT_EMAIL: ((git-email))
       GIT_NAME: ((git-name))
-      TARGET_BRANCH_NAME: develop
+      SOURCE_BRANCH_NAME: develop
   - put: to-repo
     resource: repo-release
     params:
