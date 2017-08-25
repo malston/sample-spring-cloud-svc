@@ -6,8 +6,8 @@ resources:
     uri: ((app-url))
     branch: develop
     private_key: ((github-private-key))
-    ignore_paths:
-      - ci
+    # ignore_paths:
+    #   - ci
 
 - name: repo-release
   type: git
@@ -15,8 +15,8 @@ resources:
     uri: ((app-url))
     branch: release
     private_key: ((github-private-key))
-    ignore_paths:
-      - ci
+    # ignore_paths:
+    #   - ci
 
 - name: repo-master
   type: git
@@ -24,8 +24,8 @@ resources:
     uri: ((app-url))
     branch: master
     private_key: ((github-private-key))
-    ignore_paths:
-      - ci
+    # ignore_paths:
+    #   - ci
 
 - name: version
   type: semver
@@ -67,7 +67,7 @@ jobs:
     - get: to-repo
       resource: repo-master
   - task: merge-release-to-master
-    file: tools/tasks/merge-branch/task.yml
+    file: to-repo/ci/tasks/merge-branch/task.yml
     params:
       GIT_EMAIL: ((git-email))
       GIT_NAME: ((git-name))
@@ -160,14 +160,16 @@ jobs:
         passed:
           - tag-master
         trigger: true
-      - get: repo
+      - get: to-repo
         resource: repo-develop
-      - get: repo-release
+      - get: from-repo
+        resource: repo-release
     - task: merge-release-to-develop
-      file: tools/ci/tasks/merge-release/branch/task.yml
+      file: to-repo/ci/tasks/merge-branch/task.yml
       params:
-        GIT_EMAIL: {{git-email}}
-        GIT_NAME: {{git-name}}
+        GIT_EMAIL: ((git-email))
+        GIT_NAME: ((git-name))
+        SOURCE_BRANCH_NAME: release
     - put: repo
       resource: repo-develop
       params:
