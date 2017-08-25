@@ -6,8 +6,6 @@ resources:
     uri: ((app-url))
     branch: develop
     private_key: ((github-private-key))
-    ignore_paths:
-      - ci
 
 - name: version
   type: git
