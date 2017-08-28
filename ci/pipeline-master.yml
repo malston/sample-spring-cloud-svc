@@ -84,7 +84,7 @@ jobs:
       trigger: true
     - get: m2
     - get: version
-      params: {pre: rc}
+      params: {pre: final}
   - task: build-and-upload
     file: tools/tasks/build-and-upload/task.yml
     params:
@@ -109,7 +109,7 @@ jobs:
     file: tools/tasks/tag-repo/task.yml
     params:
       TAG_PREFIX: prod
-      APPEND_TIMESTAMP: true
+      APPEND_TIMESTAMP: false
   - put: repo-master
     params:
       repository: out
