@@ -36,10 +36,11 @@ cd ${ROOT_FOLDER}/${REPO_RESOURCE}
 
 export TERM=dumb
 
-echo "Bump to ${VERSION}"
 VERSION=${PIPELINE_VERSION}-SNAPSHOT
 MESSAGE="[Concourse CI] Bump to Next Development Version ($VERSION)"
 export M2_HOME=../m2/rootfs/opt/m2
+
+echo "Bump to ${VERSION}"
 
 cd ${ROOT_FOLDER}/${OUTPUT_RESOURCE}
 shopt -s dotglob
