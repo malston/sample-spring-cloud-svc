@@ -7,7 +7,7 @@
     <groupId>org.bk</groupId>
     <artifactId>sample-spring-cloud-svc</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.3-SNAPSHOT</version>
     <name>Sample Spring Cloud project for demonstrating a CD pipeline using Jenkins</name>
 
     <parent>
