@@ -6,14 +6,12 @@ resources:
     uri: ((app-url))
     branch: develop
     private_key: ((github-private-key))
-    ignore_paths:
-      - ci
 
-- name: version
+- name: version-snapshot
   type: git
   source:
     uri: ((app-url))
-    branch: version
+    branch: version-snapshot
     private_key: ((github-private-key))
 
 - name: tools
@@ -39,13 +37,14 @@ jobs:
       trigger: true
     - get: m2
     - get: version
-      resource: version
-  - task: get-version  # Using the project version instead
+      resource: version-snapshot
+  - task: get-version  # Retrieve the project version for this build
     file: repo/ci/tasks/get-version/task.yml
     params:
       GIT_EMAIL: ((git-email))
       GIT_NAME: ((git-name))
-  - put: version
+  - put: version       # Update the version if the project version changed
+    resource: version-snapshot
     params:
       repository: updated-version
   - task: build-and-upload
@@ -66,7 +65,7 @@ jobs:
       trigger: true
     - get: m2
     - get: version
-      resource: version
+      resource: version-snapshot
   - task: build-api-compatibility-check
     file: tools/tasks/build-api-compatibility-check/task.yml
     params:
@@ -85,7 +84,7 @@ jobs:
       trigger: true
     - get: m2
     - get: version
-      resource: version
+      resource: version-snapshot
   - task: test-deploy
     file: tools/tasks/test-deploy/task.yml
     params:
@@ -106,7 +105,7 @@ jobs:
       trigger: true
     - get: m2
     - get: version
-      resource: version
+      resource: version-snapshot
   - task: test-smoke
     file: tools/tasks/test-smoke/task.yml
     params:
@@ -126,7 +125,7 @@ jobs:
       trigger: true
     - get: m2
     - get: version
-      resource: version
+      resource: version-snapshot
   - task: test-rollback-deploy
     file: tools/tasks/test-rollback-deploy/task.yml
     params:
@@ -147,7 +146,7 @@ jobs:
       trigger: true
     - get: m2
     - get: version
-      resource: version
+      resource: version-snapshot
   - task: test-rollback-smoke
     file: tools/tasks/test-rollback-smoke/task.yml
     params:
