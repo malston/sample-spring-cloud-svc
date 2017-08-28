@@ -61,7 +61,7 @@ jobs:
     - get: to-repo
       resource: repo-master
   - task: merge-release-to-master
-    file: to-repo/ci/tasks/merge-branch/task.yml
+    file: from-repo/ci/tasks/merge-branch/task.yml
     params:
       GIT_EMAIL: ((git-email))
       GIT_NAME: ((git-name))
