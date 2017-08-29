@@ -8,10 +8,11 @@ image_resource:
     tag: 8-jdk-alpine
 
 inputs:
-- name: git-repo
+- name: repo
+- name: out
 
 outputs:
-- name: test
+- name: out
 
 run:
-  path: git-repo/ci/tasks/build.sh
+  path: git-repo/ci/tasks/copy.sh
