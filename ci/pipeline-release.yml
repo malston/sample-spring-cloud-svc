@@ -43,7 +43,7 @@ resources:
     repository: springcloud/spring-pipeline-m2
 
 jobs:
-- name: create-release
+- name: create-rc
   serial: true
   public: false
   plan:
@@ -74,7 +74,7 @@ jobs:
     params:
       repository: out
 
-- name: build-and-upload
+- name: build-and-upload-rc
   serial: true
   public: false
   plan:
@@ -82,6 +82,8 @@ jobs:
     - get: tools
     - get: repo
       resource: repo-release
+      passed:
+      - create-rc
       trigger: true
     - get: m2
     - get: version
@@ -101,7 +103,7 @@ jobs:
     - get: repo
       resource: repo-release
       passed:
-      - build-and-upload
+      - build-and-upload-rc
       trigger: true
     - get: m2
     - get: version

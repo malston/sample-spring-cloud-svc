@@ -50,7 +50,7 @@ resources:
     repository: springcloud/spring-pipeline-m2
 
 jobs:
-- name: merge-release-to-master
+- name: create-final
   serial: true
   public: false
   plan:
@@ -71,7 +71,7 @@ jobs:
     params:
       repository: out
 
-- name: build-and-upload
+- name: build-and-upload-final
   serial: true
   public: false
   plan:
@@ -80,7 +80,7 @@ jobs:
     - get: repo
       resource: repo-master
       passed:
-        - merge-release-to-master
+        - create-final
       trigger: true
     - get: m2
     - get: version
@@ -91,7 +91,7 @@ jobs:
       M2_REPO: ((maven-local-dir))
       <<: *common-params
 
-- name: tag-master
+- name: tag-final
   serial: true
   public: false
   plan:
@@ -100,7 +100,7 @@ jobs:
     - get: repo
       resource: repo-master
       passed:
-        - build-and-upload
+        - build-and-upload-final
       trigger: true
     - get: m2
     - get: version
@@ -116,7 +116,7 @@ jobs:
       tag: out/tag
       only_tag: true
 
-- name: bump-version
+- name: bump-to-next-develop-version
   serial_groups:
     - version
   public: false
@@ -126,7 +126,7 @@ jobs:
       - get: m2
       - get: repo-master
         passed:
-          - tag-master
+          - tag-final
         trigger: true
       - get:  repo
         resource: repo-release
@@ -151,7 +151,7 @@ jobs:
       - get: tools
       - get: repo-master
         passed:
-          - bump-version
+          - bump-to-next-develop-version
         trigger: true
       - get: to-repo
         resource: repo-develop
@@ -177,7 +177,7 @@ jobs:
     - get: repo
       resource: repo-master
       passed:
-      - build-and-upload
+      - tag-final
       trigger: false
     - get: m2
     - get: version

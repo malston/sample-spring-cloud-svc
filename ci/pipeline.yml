@@ -8,10 +8,15 @@ groups:
     - test-smoke
     - test-rollback-deploy
     - test-rollback-smoke
-    - tag-dev-build
+    - create-rc
+    - build-and-upload-rc
     - stage-deploy
     - stage-e2e
-    - promote-to-prod
+    - create-final
+    - build-and-upload-final
+    - tag-final
+    - bump-to-next-develop-version
+    - merge-release-to-develop
     - prod-deploy
     - prod-complete
 - name: development
@@ -22,14 +27,19 @@ groups:
     - test-smoke
     - test-rollback-deploy
     - test-rollback-smoke
-    - tag-dev-build
 - name: staging
   jobs:
+    - create-rc
+    - build-and-upload-rc
     - stage-deploy
     - stage-e2e
 - name: production
   jobs:
-    - promote-to-prod
+    - create-final
+    - build-and-upload-final
+    - tag-final
+    - bump-to-next-develop-version
+    - merge-release-to-develop
     - prod-deploy
     - prod-complete
 
@@ -61,19 +71,22 @@ resources:
     ignore_paths:
       - ci
 
-- name: version
+- name: version-snapshot
   type: git
+  source:
+    uri: ((app-url))
+    branch: version-snapshot
+    private_key: ((github-private-key))
+
+- name: version
+  type: semver
   source:
     uri: ((app-url))
     branch: version
     private_key: ((github-private-key))
-
-- name: tag
-  type: git
-  source:
-    uri: ((app-url))
-    branch: ((app-branch))
-    private_key: ((github-private-key))
+    file: version
+    driver: git
+    initial_version: 1.0.0
 
 - name: tools
   type: git
@@ -87,6 +100,7 @@ resources:
     repository: springcloud/spring-pipeline-m2
 
 jobs:
+## develop pipeline
 - name: build-and-upload
   serial: true
   public: false
@@ -98,13 +112,14 @@ jobs:
       trigger: true
     - get: m2
     - get: version
-      resource: version
-  - task: get-version  # Using the project version instead
+      resource: version-snapshot
+  - task: get-version  # Retrieve the project version for this build
     file: repo/ci/tasks/get-version/task.yml
     params:
       GIT_EMAIL: ((git-email))
       GIT_NAME: ((git-name))
-  - put: version
+  - put: version       # Update the version if the project version changed
+    resource: version-snapshot
     params:
       repository: updated-version
   - task: build-and-upload
@@ -125,7 +140,7 @@ jobs:
       trigger: true
     - get: m2
     - get: version
-      resource: version
+      resource: version-snapshot
   - task: build-api-compatibility-check
     file: tools/tasks/build-api-compatibility-check/task.yml
     params:
@@ -144,7 +159,7 @@ jobs:
       trigger: true
     - get: m2
     - get: version
-      resource: version
+      resource: version-snapshot
   - task: test-deploy
     file: tools/tasks/test-deploy/task.yml
     params:
@@ -165,7 +180,7 @@ jobs:
       trigger: true
     - get: m2
     - get: version
-      resource: version
+      resource: version-snapshot
   - task: test-smoke
     file: tools/tasks/test-smoke/task.yml
     params:
@@ -185,7 +200,7 @@ jobs:
       trigger: true
     - get: m2
     - get: version
-      resource: version
+      resource: version-snapshot
   - task: test-rollback-deploy
     file: tools/tasks/test-rollback-deploy/task.yml
     params:
@@ -206,37 +221,57 @@ jobs:
       trigger: true
     - get: m2
     - get: version
-      resource: version
+      resource: version-snapshot
   - task: test-rollback-smoke
     file: tools/tasks/test-rollback-smoke/task.yml
     params:
       <<: *common-params
       <<: *paas-test-params
 
-- name: tag-dev-build
+## release pipeline
+- name: create-rc
+  serial: true
+  public: false
+  plan:
+  - aggregate:
+    - get: tools
+    - get: from-repo
+      resource: repo-develop
+      passed:
+      - test-rollback-smoke
+      trigger: false
+    - get: to-repo
+      resource: repo-release
+  - task: merge-develop-to-release
+    file: to-repo/ci/tasks/merge-branch/task.yml
+    params:
+      GIT_EMAIL: ((git-email))
+      GIT_NAME: ((git-name))
+      SOURCE_BRANCH_NAME: develop
+  - put: to-repo
+    resource: repo-release
+    params:
+      repository: out
+
+- name: build-and-upload-rc
   serial: true
   public: false
   plan:
   - aggregate:
     - get: tools
     - get: repo
-      resource: repo-develop
-    - get: version
-      resource: version
+      resource: repo-release
       passed:
-      - test-rollback-smoke
+      - create-rc
       trigger: true
-  - task: create-dev-tag
-    file: tools/tasks/tag-repo/task.yml
+    - get: m2
+    - get: version
+      params: {pre: rc}
+  - task: build-and-upload
+    file: tools/tasks/build-and-upload/task.yml
     params:
-      TAG_PREFIX: dev
-      APPEND_TIMESTAMP: "true"
-  - put: tag
-    params:
-      repository: out
-      tag: out/tag
-      only_tag: true
-
+      M2_REPO: ((maven-local-dir))
+      <<: *common-params
 
 - name: stage-deploy
   serial: true
@@ -246,13 +281,12 @@ jobs:
     - get: tools
     - get: repo
       resource: repo-release
+      passed:
+      - build-and-upload-rc
+      trigger: true
     - get: m2
     - get: version
-    - get: tag
-      resource: tag
-      passed:
-      - tag-dev-build
-      trigger: true
+      params: {pre: rc}
   - task: stage-deploy
     file: tools/tasks/stage-deploy/task.yml
     params:
@@ -267,50 +301,140 @@ jobs:
   - aggregate:
     - get: tools
     - get: repo
-    - get: m2
-    - get: version
-    - get: tag
+      resource: repo-release
       passed:
       - stage-deploy
       trigger: true
+    - get: m2
+    - get: version
+      params: {pre: rc}
   - task: stage-e2e
     file: tools/tasks/stage-e2e/task.yml
     params:
       <<: *common-params
       <<: *paas-stage-params
 
-- name: promote-to-prod
+# master pipeline
+- name: create-final
+  serial: true
+  public: false
+  plan:
+  - aggregate:
+    - get: tools
+    - get: from-repo
+      resource: repo-release
+      passed:
+      - stage-e2e
+      trigger: false
+    - get: to-repo
+      resource: repo-master
+  - task: merge-release-to-master
+    file: from-repo/ci/tasks/merge-branch/task.yml
+    params:
+      GIT_EMAIL: ((git-email))
+      GIT_NAME: ((git-name))
+      SOURCE_BRANCH_NAME: release
+  - put: to-repo
+    resource: repo-master
+    params:
+      repository: out
+
+- name: build-and-upload-final
   serial: true
   public: false
   plan:
   - aggregate:
     - get: tools
     - get: repo
+      resource: repo-master
+      passed:
+        - create-final
+      trigger: true
     - get: m2
     - get: version
-    - get: tag
+      params: {bump: final}
+  - task: build-and-upload
+    file: tools/tasks/build-and-upload/task.yml
+    params:
+      M2_REPO: ((maven-local-dir))
+      <<: *common-params
+
+- name: tag-final
+  serial: true
+  public: false
+  plan:
+  - aggregate:
+    - get: tools
+    - get: repo
+      resource: repo-master
       passed:
-      - stage-e2e
-      trigger: false
-  - task: set-version
-    file: tools/tasks/generate-version/task.yml
-    params:
-      GIT_EMAIL: ((git-email))
-      GIT_NAME: ((git-name))
-      VERSION: 1.0.1-RELEASE
-  - put: version
-    params:
-      repository: updated-version
+        - build-and-upload-final
+      trigger: true
+    - get: m2
+    - get: version
+      params: {bump: final}
   - task: create-prod-tag
     file: tools/tasks/tag-repo/task.yml
     params:
       TAG_PREFIX: prod
-      SEMVER:
-  - put: tag
+      APPEND_TIMESTAMP: false
+  - put: repo-master
     params:
       repository: out
       tag: out/tag
       only_tag: true
+
+- name: bump-to-next-develop-version
+  serial_groups:
+    - version
+  public: false
+  plan:
+    - aggregate:
+      - get: tools
+      - get: m2
+      - get: repo-master
+        passed:
+          - tag-final
+        trigger: true
+      - get:  repo
+        resource: repo-release
+      - get: version
+        params: {bump: patch}
+    - task: bump-to-next-develop-version
+      file: repo/ci/tasks/bump-to-next-develop-version/task.yml
+      params:
+        GIT_EMAIL: ((git-email))
+        GIT_NAME: ((git-name))
+    - put: repo
+      resource: repo-release
+      params:
+        repository: out
+    - put: version
+      params: {file: version/number}
+
+- name: merge-release-to-develop
+  public: false
+  plan:
+    - aggregate:
+      - get: tools
+      - get: repo-master
+        passed:
+          - bump-to-next-develop-version
+        trigger: true
+      - get: to-repo
+        resource: repo-develop
+      - get: from-repo
+        resource: repo-release
+    - task: merge-release-to-develop
+      file: to-repo/ci/tasks/merge-branch/task.yml
+      params:
+        GIT_EMAIL: ((git-email))
+        GIT_NAME: ((git-name))
+        SOURCE_BRANCH_NAME: release
+    - put: repo
+      resource: repo-develop
+      params:
+        repository: out
 
 - name: prod-deploy
   serial: true
@@ -319,12 +443,12 @@ jobs:
   - aggregate:
     - get: tools
     - get: repo
+      resource: repo-master
+      passed:
+      - tag-final
+      trigger: false
     - get: m2
     - get: version
-      resource: version
-      passed:
-      - promote-to-prod
-      trigger: false
   - task: prod-deploy
     file: tools/tasks/prod-deploy/task.yml
     params:
@@ -339,12 +463,12 @@ jobs:
   - aggregate:
     - get: tools
     - get: repo
-    - get: m2
-    - get: version
-      resource: version
+      resource: repo-master
       passed:
       - prod-deploy
       trigger: false
+    - get: m2
+    - get: version
   - task: prod-complete
     file: tools/tasks/prod-complete/task.yml
     params:
