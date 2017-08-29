@@ -396,8 +396,7 @@ jobs:
         passed:
           - tag-final
         trigger: true
-      - get:  repo
-        resource: repo-release
+      - get:  repo-release
       - get: version
         params: {bump: patch}
     - task: bump-to-next-develop-version
