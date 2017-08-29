@@ -35,12 +35,9 @@ cd ${ROOT_FOLDER}/${REPO_RESOURCE}
 [[ -f "${FUNCTIONS_FOLDER}/projectType/pipeline-jvm.sh" ]] && source "${FUNCTIONS_FOLDER}/projectType/pipeline-jvm.sh" || \
     echo "No ${FUNCTIONS_FOLDER}/projectType/pipeline-jvm.sh found"
 
-echo "Generating settings.xml / gradle properties for Maven in local m2"
-source ${CWD}/generate-settings.sh
-
 export TERM=dumb
 
-echo "Building and uploading the projects artifacts"
+echo "Building project artifacts"
 
 lowerCaseProjectType=$( echo "${PROJECT_TYPE}" | tr '[:upper:]' '[:lower:]' )
 [[ -f "${CWD}/projectType/pipeline-${lowerCaseProjectType}.sh" ]] && source "${CWD}/projectType/pipeline-${lowerCaseProjectType}.sh" || \
