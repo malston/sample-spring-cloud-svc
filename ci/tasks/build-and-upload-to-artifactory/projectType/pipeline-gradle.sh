@@ -15,7 +15,7 @@ function build() {
     local artifactVersion="1.0.4-SNAPSHOT"
 
     echo "Copying artifacts from build/libs to ../out"
-    mkdir -p out/org/bk/${artifactId}/${artifactVersion}/
+    mkdir -p ../out/org/bk/${artifactId}/${artifactVersion}/
     cp -p build/libs/${artifactId}-${artifactVersion}.jar ../out/org/bk/${artifactId}/${artifactVersion}/${artifactId}-${artifactVersion}.jar
 }
 
