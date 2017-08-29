@@ -20,7 +20,7 @@ resources:
     uri: ((artifactory-url))
     username: ((artifactory-username))
     password: ((artifactory-password))
-    build_name: test-build
+    build_name: ((build-name))
 
 - name: version
   type: git

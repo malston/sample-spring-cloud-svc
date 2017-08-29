@@ -19,8 +19,14 @@ function build() {
     else
         ./mvnw clean verify deploy -Ddistribution.management.release.id=${M2_SETTINGS_REPO_ID} -Ddistribution.management.release.url=${REPO_WITH_BINARIES} -Ddistribution.management.snapshot.url=${REPO_WITH_SNAPSHOT_BINARIES} -Drepo.with.binaries=${REPO_WITH_BINARIES} ${BUILD_OPTIONS}
     fi
+
+    local artifactId="sample-spring-cloud-svc"
+    local groupId="org.bk"
+    local artifactVersion="1.0.4-SNAPSHOT"
+
     echo "Copying artifacts from target/ to ../out"
     cp -p target/*.jar ../out
+    cp -p target/${artifactId}-${artifactVersion}.jar ../out/org/bk/${artifactId}/${artifactVersion}/${artifactId}-${artifactVersion}.jar
 }
 
 export -f build
