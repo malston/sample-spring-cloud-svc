@@ -62,7 +62,7 @@ jobs:
     params:
       repository: updated-version
   - task: build-and-upload
-    file: repo/ci/tasks/uild-and-upload-for-artifactory/task.yml
+    file: repo/ci/tasks/build-and-upload-for-artifactory/task.yml
     params:
       <<: *common-params
   - put: artifactory

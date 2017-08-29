@@ -9,6 +9,7 @@ function build() {
     else
         ./gradlew clean build deploy -PnewVersion=${PIPELINE_VERSION} -DREPO_WITH_BINARIES=${REPO_WITH_BINARIES} --stacktrace ${BUILD_OPTIONS}
     fi
+    echo "Copying artifacts from build/libs to ../out"
     cp -p build/libs/*.jar ../out
 }
 
