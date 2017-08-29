@@ -62,11 +62,9 @@ jobs:
     params:
       repository: updated-version
   - task: build-and-upload
-    file: tools/tasks/build-and-upload/task.yml
+    file: repo/ci/tasks/uild-and-upload-for-artifactory/task.yml
     params:
       <<: *common-params
-  - task: copy-jar-to-out
-    file: repo/ci/tasks/copy.yml
   - put: artifactory
     params:
       repo: libs-snapshot-local
