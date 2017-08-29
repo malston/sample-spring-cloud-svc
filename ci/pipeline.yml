@@ -62,7 +62,7 @@ jobs:
     params:
       repository: updated-version
   - task: build
-    file: repo/ci/tasks/build/task.yml
+    file: tools/tasks/build/task.yml
     params:
       <<: *common-params
   - put: artifactory
