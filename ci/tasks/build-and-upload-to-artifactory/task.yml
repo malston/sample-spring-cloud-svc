@@ -14,4 +14,4 @@ outputs:
 run:
   path: /bin/bash
   args:
-    - repo/ci/tasks/build-and-upload-for-artifactory/task.sh
+    - repo/ci/tasks/build-and-upload-to-artifactory/task.sh
