@@ -61,7 +61,7 @@ jobs:
     - get: to-repo
       resource: repo-master
   - task: merge-release-to-master
-    file: from-repo/ci/tasks/merge-branch/task.yml
+    file: tools/tasks/merge-branch/task.yml
     params:
       GIT_EMAIL: ((git-email))
       GIT_NAME: ((git-name))
@@ -132,7 +132,7 @@ jobs:
       - get: version
         params: {bump: patch}
     - task: bump-to-next-develop-version
-      file: repo/ci/tasks/bump-to-next-develop-version/task.yml
+      file: tools/tasks/bump-to-next-develop-version/task.yml
       params:
         GIT_EMAIL: ((git-email))
         GIT_NAME: ((git-name))
@@ -157,7 +157,7 @@ jobs:
       - get: from-repo
         resource: repo-release
     - task: merge-release-to-develop
-      file: to-repo/ci/tasks/merge-branch/task.yml
+      file: tools/tasks/merge-branch/task.yml
       params:
         GIT_EMAIL: ((git-email))
         GIT_NAME: ((git-name))

@@ -54,7 +54,7 @@ jobs:
     - get: to-repo
       resource: repo-release
   # - task: create-release-branch
-  #   file: repo/ci/tasks/create-branch/task.yml
+  #   file: tools/tasks/create-branch/task.yml
   #   params:
   #     GIT_EMAIL: ((git-email))
   #     GIT_NAME: ((git-name))
@@ -64,7 +64,7 @@ jobs:
   #   params:
   #     repository: out
   - task: merge-develop-to-release
-    file: to-repo/ci/tasks/merge-branch/task.yml
+    file: tools/tasks/merge-branch/task.yml
     params:
       GIT_EMAIL: ((git-email))
       GIT_NAME: ((git-name))

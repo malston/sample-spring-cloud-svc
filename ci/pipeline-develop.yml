@@ -39,7 +39,7 @@ jobs:
     - get: version
       resource: version-snapshot
   - task: get-version  # Retrieve the project version for this build
-    file: repo/ci/tasks/get-version/task.yml
+    file: tools/tasks/get-version/task.yml
     params:
       GIT_EMAIL: ((git-email))
       GIT_NAME: ((git-name))
