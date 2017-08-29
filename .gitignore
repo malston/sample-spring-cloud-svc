@@ -14,3 +14,4 @@ out/
 *.iml
 
 credentials.yml
+!ci/tasks/build/
