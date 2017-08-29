@@ -2,7 +2,9 @@
 resource_types:
   - name: artifactory-resource
     type: docker-image
-    source: {repository: springio/artifactory-resource, tag: latest}
+    source:
+      repository: springio/artifactory-resource
+      tag: 0.0.1-SNAPSHOT
 
 resources:
 - name: git-repo
@@ -16,8 +18,8 @@ resources:
   type: artifactory-resource
   source:
     uri: ((artifactory-url))
-    username: ((m2-settings-repo-username))
-    password: ((m2-settings-repo-password))
+    username: ((artifactory-username))
+    password: ((artifactory-password))
     build_name: test-build
 
 jobs:
