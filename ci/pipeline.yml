@@ -61,7 +61,7 @@ jobs:
     resource: version
     params:
       repository: updated-version
-  - task: build-and-upload
+  - task: build
     file: repo/ci/tasks/build/task.yml
     params:
       <<: *common-params
