@@ -4,6 +4,17 @@ set -o errexit
 
 CWD="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+function copyArtifactToOutputFolder {
+  local artifactId=$( retrieveAppName )
+  local groupId=$( retrieveGroupId )
+  local changedGroupId="$( echo "${groupId}" | tr . / )"
+  local artifactVersion=${PIPELINE_VERSION}
+
+  echo "Copying artifacts from [${ROOT_FOLDER}/${REPO_RESOURCE}/${OUTPUT_FOLDER}] to [${ROOT_FOLDER}/${OUTPUT_RESOURCE}]"
+  mkdir -p ${ROOT_FOLDER}/${OUTPUT_RESOURCE}/${changedGroupId}/${artifactId}/${artifactVersion}/
+  cp -p ${ROOT_FOLDER}/${REPO_RESOURCE}/${OUTPUT_FOLDER}/${artifactId}-${artifactVersion}.jar ${ROOT_FOLDER}/${OUTPUT_RESOURCE}/${changedGroupId}/${artifactId}/${artifactVersion}/${artifactId}-${artifactVersion}.jar
+}
+
 export ROOT_FOLDER=$( pwd )
 export REPO_RESOURCE=repo
 export TOOLS_RESOURCE=tools
@@ -44,3 +55,4 @@ lowerCaseProjectType=$( echo "${PROJECT_TYPE}" | tr '[:upper:]' '[:lower:]' )
     echo "No ${CWD}/projectType/pipeline-${lowerCaseProjectType}.sh found"
 
 build
+copyArtifactToOutputFolder
