@@ -20,13 +20,14 @@ function build() {
         ./mvnw clean package ${BUILD_OPTIONS}
     fi
 
-    local artifactId="sample-spring-cloud-svc"
-    local groupId="org.bk"
+    local artifactId=$( retrieveAppName )
+    local groupId=$( retrieveGroupId )
+    local changedGroupId="$( echo "${groupId}" | tr . / )"
     local artifactVersion=${PIPELINE_VERSION}
 
     echo "Copying artifacts from target/ to ../out"
-    mkdir -p ../out/org/bk/${artifactId}/${artifactVersion}/
-    cp -p target/${artifactId}-${artifactVersion}.jar ../out/org/bk/${artifactId}/${artifactVersion}/${artifactId}-${artifactVersion}.jar
+    mkdir -p ../out/${changedGroupId}/${artifactId}/${artifactVersion}/
+    cp -p target/${artifactId}-${artifactVersion}.jar ../out/${changedGroupId}/${artifactId}/${artifactVersion}/${artifactId}-${artifactVersion}.jar
 }
 
 export -f build

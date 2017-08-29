@@ -12,11 +12,12 @@ function build() {
 
     local artifactId="sample-spring-cloud-svc"
     local groupId="org.bk"
+    local changedGroupId="$( echo "${groupId}" | tr . / )"
     local artifactVersion=${PIPELINE_VERSION}
 
     echo "Copying artifacts from build/libs to ../out"
-    mkdir -p ../out/org/bk/${artifactId}/${artifactVersion}/
-    cp -p build/libs/${artifactId}-${artifactVersion}.jar ../out/org/bk/${artifactId}/${artifactVersion}/${artifactId}-${artifactVersion}.jar
+    mkdir -p ../out/${changedGroupId}/${artifactId}/${artifactVersion}/
+    cp -p build/libs/${artifactId}-${artifactVersion}.jar ../out/${changedGroupId}/${artifactId}/${artifactVersion}/${artifactId}-${artifactVersion}.jar
 }
 
 export -f build
