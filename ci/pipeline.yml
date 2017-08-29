@@ -84,7 +84,6 @@ jobs:
       trigger: true
     - get: tools
     - get: repo
-      trigger: true
     - get: m2
     - get: version
       resource: version
