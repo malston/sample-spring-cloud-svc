@@ -1,0 +1,17 @@
+'{
+ "status": "staged",
+ "comment" : "Tested on all target platforms.",
+ "ciUser": "admin",
+ "timestamp" : "ISO8601",
+ "dryRun" : true,
+ "sourceRepo" : "libs-snapshot-local",
+ "targetRepo" : "libs-release-local",
+ "copy": false,
+ "artifacts" : true,
+ "dependencies" : false,
+ "scopes" : [ "compile", "runtime" ],
+ "properties": {
+     "release-name": ["sample-spring-cloud-svc-1.0.5-RELEASE"]
+ },
+ "failFast": true
+}'
