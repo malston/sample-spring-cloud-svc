@@ -85,13 +85,11 @@ jobs:
       passed:
       - create-rc
       trigger: true
-    - get: m2
     - get: version
       params: {pre: rc}
   - task: build-and-upload
     file: tools/tasks/build-and-upload/task.yml
     params:
-      M2_REPO: ((maven-local-dir))
       <<: *common-params
 
 - name: stage-deploy
@@ -105,7 +103,6 @@ jobs:
       passed:
       - build-and-upload-rc
       trigger: true
-    - get: m2
     - get: version
       params: {pre: rc}
   - task: stage-deploy
@@ -126,7 +123,6 @@ jobs:
       passed:
       - stage-deploy
       trigger: true
-    - get: m2
     - get: version
       params: {pre: rc}
   - task: stage-e2e
@@ -141,7 +137,6 @@ common-params: &common-params
   BUILD_OPTIONS: ((build-options))
   GIT_EMAIL: ((git-email))
   GIT_NAME: ((git-name))
-  M2_REPO: ((maven-local-dir))
   M2_SETTINGS_REPO_ID: ((m2-settings-repo-id))
   M2_SETTINGS_REPO_PASSWORD: ((m2-settings-repo-password))
   M2_SETTINGS_REPO_USERNAME: ((m2-settings-repo-username))

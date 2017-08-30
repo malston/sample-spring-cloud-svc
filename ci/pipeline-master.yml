@@ -82,13 +82,11 @@ jobs:
       passed:
         - create-final
       trigger: true
-    - get: m2
     - get: version
       params: {bump: final}
   - task: build-and-upload
     file: tools/tasks/build-and-upload/task.yml
     params:
-      M2_REPO: ((maven-local-dir))
       <<: *common-params
 
 - name: tag-final
@@ -102,7 +100,6 @@ jobs:
       passed:
         - build-and-upload-final
       trigger: true
-    - get: m2
     - get: version
       params: {bump: final}
   - task: create-prod-tag
@@ -123,7 +120,6 @@ jobs:
   plan:
     - aggregate:
       - get: tools
-      - get: m2
       - get: repo-master
         passed:
           - tag-final
@@ -178,7 +174,6 @@ jobs:
       passed:
       - tag-final
       trigger: false
-    - get: m2
     - get: version
   - task: prod-deploy
     file: tools/tasks/prod-deploy/task.yml
@@ -198,7 +193,6 @@ jobs:
       passed:
       - prod-deploy
       trigger: false
-    - get: m2
     - get: version
   - task: prod-complete
     file: tools/tasks/prod-complete/task.yml
@@ -212,7 +206,6 @@ common-params: &common-params
   BUILD_OPTIONS: ((build-options))
   GIT_EMAIL: ((git-email))
   GIT_NAME: ((git-name))
-  M2_REPO: ((maven-local-dir))
   M2_SETTINGS_REPO_ID: ((m2-settings-repo-id))
   M2_SETTINGS_REPO_PASSWORD: ((m2-settings-repo-password))
   M2_SETTINGS_REPO_USERNAME: ((m2-settings-repo-username))
